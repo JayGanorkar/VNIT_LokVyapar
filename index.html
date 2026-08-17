@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="en" class="fs-normal">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LokVyapar Mahaportal | Smart Street Vendor & Crowd Intelligence Platform</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description"
+    content="LokVyapar (लोकव्यापार) - Government of Maharashtra & Nagpur Municipal Corporation Official Street Vendor Crowd Analytics, PM-SVANidhi, and Civic Redressal Portal." />
+  <meta name="keywords"
+    content="LokVyapar, लोकव्यापार, Nagpur Municipal Corporation, Government of Maharashtra, PM SVANidhi, Street Vendors, Sitabuldi, Sadar, Dharampeth, Itwari, Mahavendor" />
+
+  <!-- Google Fonts: Plus Jakarta Sans & Mukta (Devanagari) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Yantramanav:wght@500;700;900&display=swap"
+    rel="stylesheet" />
+
+  <!-- Leaflet GIS Map CSS & Font Awesome 6.5 Icons -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Custom Maharashtra Gov & Student Project Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+  <!-- ==================== 1. TOP TRICOLOR RIBBON ==================== -->
+  <div class="top-tricolor-strip" aria-hidden="true"></div>
+
+  <!-- ==================== 2. MAHARASHTRA GOV UTILITY & ACCESSIBILITY BAR ==================== -->
+  <aside class="gov-utility-bar" aria-label="MANTHAN 4 YUVA">
+    <div class="container gov-utility-inner">
+      <div class="gov-state-identity">
+        <span class="gov-emblem-small" title="MANTHAN 4 YUVA">म</span>
+        <span data-i18n="gov_maha">MANTHAN 4 YUVA</span>
+        <span style="opacity:0.6;">&bull;</span>
+        <span data-i18n="nmc_title">Nagpur Municipal Corporation (NMC)</span>
+      </div>
+
+      <div class="gov-accessibility-controls">
+        <!-- Font Scaling (Accessibility) -->
+        <div class="accessibility-group" title="Adjust Font Size">
+          <button class="acc-btn" id="btnFontMinus" onclick="adjustFontSize('decrease')"
+            title="Decrease Font">A-</button>
+          <button class="acc-btn active" id="btnFontReset" onclick="adjustFontSize('reset')"
+            title="Standard Font">A</button>
+          <button class="acc-btn" id="btnFontPlus" onclick="adjustFontSize('increase')"
+            title="Increase Font">A+</button>
+        </div>
+
+        <!-- Language Switcher (English / Marathi) -->
+        <div class="lang-switch-group" title="Select Language">
+          <button class="lang-btn active" id="langBtnEn" onclick="setLanguage('en')">English</button>
+          <button class="lang-btn" id="langBtnMr" onclick="setLanguage('mr')">मराठी</button>
+        </div>
+
+        <!-- Live Clock & Status -->
+        <span class="live-time-chip" id="liveTimeBadge">
+          <i class="fa-solid fa-clock"></i> 16:45 IST
+        </span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==================== 3. OFFICIAL NOTICE TICKER ==================== -->
+  <div class="gov-notice-ticker" aria-label="Official Circulars Bulletin">
+    <div class="container ticker-inner">
+      <span class="ticker-badge" data-i18n="ticker_badge"><i class="fa-solid fa-bell"></i> Latest Circular</span>
+      <div class="ticker-content">
+        <div class="ticker-marquee" data-i18n="ticker_text">
+          Nagpur Municipal Corporation Town Vending Committee (TVC) Circular 2026: Free QR Smart Cards and PM-SVANidhi
+          7% interest subsidies now directly credited to verified street vendor bank accounts across Sitabuldi, Sadar,
+          and Itwari.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 4. PRIMARY HEADER & NAVIGATION ==================== -->
+  <header class="main-header">
+    <div class="container header-content">
+      <!-- Logo & Government Branding -->
+      <a href="#" class="brand-wrapper" onclick="switchView('citizen'); return false;">
+        <div class="gov-seal-badge" title="LokVyapar - Urban Development Initiative">
+          <i class="fa-solid fa-landmark"></i>
+        </div>
+        <div class="brand-text-block">
+          <span class="brand-maha-tag" data-i18n="brand_tag">Nagpur Municipal Corporation &bull; Town Vending Committee
+            (TVC)</span>
+          <div class="brand-main-title">
+            LokVyapar <span class="brand-marathi-tag">लोकव्यापार</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+            <span class="brand-subtext" data-i18n="sub_title">Smart Street Vendor Footfall & Oversight Hub</span>
+            <button class="student-tag-pill" onclick="openStudentProjectModal()" title="View Student Capstone Report">
+              <i class="fa-solid fa-graduation-cap"></i> <span data-i18n="student_badge">🎓 Student Project (B.Tech
+                Computer Engg. 2025-26)</span>
+            </button>
+          </div>
+        </div>
+      </a>
+
+      <!-- Role Switcher Navigation (Citizen / Vendor / NMC Admin) -->
+      <nav class="role-nav-group" aria-label="Portal Navigation">
+        <button class="role-tab-btn active" id="tab-citizen" onclick="switchView('citizen')">
+          <i class="fa-solid fa-users"></i>
+          <span data-i18n="nav_citizen">Citizen Portal</span>
+        </button>
+        <button class="role-tab-btn" id="tab-vendor" onclick="switchView('vendor')">
+          <i class="fa-solid fa-store"></i>
+          <span data-i18n="nav_vendor">Vendor Portal</span>
+          <span class="role-chip" data-i18n="tab_stall">Stall</span>
+        </button>
+        <button class="role-tab-btn" id="tab-nmc" onclick="switchView('nmc')">
+          <i class="fa-solid fa-landmark-dome"></i>
+          <span data-i18n="nav_nmc">NMC Municipal</span>
+          <span class="role-chip" data-i18n="tab_admin">Admin</span>
+        </button>
+      </nav>
+
+      <!-- Action Buttons & Logins -->
+      <div class="header-actions-right">
+        <button class="btn btn-gov-outline btn-sm" id="btnVendorLoginModal" onclick="openModal('vendorLoginModal')">
+          <i class="fa-solid fa-user-tag"></i>
+          <span data-i18n="btn_vendor_login">Vendor Login</span>
+        </button>
+        <button class="btn btn-gov-primary btn-sm" id="btnNmcLoginModal" onclick="openModal('nmcLoginModal')">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span data-i18n="btn_nmc_login">NMC Officer Login</span>
+        </button>
+
+        <!-- Logged-in session chip -->
+        <div class="user-session-chip hidden" id="userSessionChip">
+          <div class="user-avatar" id="userSessionAvatar">R</div>
+          <div class="user-meta">
+            <div class="user-name" id="userSessionName">Ramesh Chaat Corner</div>
+            <div class="user-role-badge" id="userSessionRole">Vendor &bull; Sitabuldi</div>
+          </div>
+          <button class="btn-logout" title="Logout" onclick="logoutSession()">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== 5. QUICK CIVIC SCHEMES RIBBON ==================== -->
+  <div class="gov-schemes-strip">
+    <div class="container schemes-grid">
+      <a href="#svanidhiInfo" class="scheme-card" onclick="openSvanidhiModal(); return false;">
+        <div class="scheme-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+        <div>
+          <div class="scheme-title" data-i18n="scheme_svanidhi_title">PM SVANidhi Scheme</div>
+          <div class="scheme-sub" data-i18n="scheme_svanidhi_sub">₹10,000 to ₹50,000 Micro-credit</div>
+        </div>
+      </a>
+      <a href="#topVendorsSection" class="scheme-card">
+        <div class="scheme-icon"><i class="fa-solid fa-bowl-food"></i></div>
+        <div>
+          <div class="scheme-title" data-i18n="scheme_fssai_title">Clean Street Food Hub</div>
+          <div class="scheme-sub" data-i18n="scheme_fssai_sub">FSSAI Grade A+ Certified</div>
+        </div>
+      </a>
+      <a href="#nagpurMapSection" class="scheme-card">
+        <div class="scheme-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+        <div>
+          <div class="scheme-title" data-i18n="scheme_tvc_title">TVC Vending By-Laws</div>
+          <div class="scheme-sub" data-i18n="scheme_tvc_sub">Designated Nagpur Zones</div>
+        </div>
+      </a>
+      <a href="#grievanceSection" class="scheme-card">
+        <div class="scheme-icon"><i class="fa-solid fa-bullhorn"></i></div>
+        <div>
+          <div class="scheme-title" data-i18n="scheme_grievance_title">Aaple Sarkar Grievance</div>
+          <div class="scheme-sub" data-i18n="scheme_grievance_sub">24-48 hr TVC Resolution</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- ======================== VIEW 1: CITIZEN PUBLIC PORTAL ============== -->
+  <!-- ===================================================================== -->
+  <main id="citizenView" class="active-view">
+
+    <!-- Hero Banner with Live Analytics Strip -->
+    <section class="hero-section">
+      <div class="container hero-grid">
+        <div class="hero-text-content">
+          <div class="hero-scheme-badge" data-i18n="hero_badge">
+            <i class="fa-solid fa-chart-line"></i> NMC & Engineering College Joint Civic Tech Initiative
+          </div>
+          <h1 class="hero-title" data-i18n="hero_title">
+            Nagpur's Smart Street Vendor Economy & <span class="highlight-gold">Live Footfall Map</span>
+          </h1>
+          <p class="hero-description" data-i18n="hero_desc">
+            Track real-time market rush hours, discover verified local street vendors, rate your favorite food stalls,
+            and report civic cleanliness issues directly to the Nagpur Municipal Corporation (NMC).
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="#nagpurMapSection" class="btn btn-gov-saffron btn-lg" data-i18n="hero_btn_map">
+              <i class="fa-solid fa-map-location-dot"></i> Explore Live Nagpur Map
+            </a>
+            <button class="btn btn-gov-outline btn-lg" onclick="openModal('complaintModal')"
+              data-i18n="hero_btn_complaint">
+              <i class="fa-solid fa-bullhorn"></i> File Citizen Complaint
+            </button>
+            <a href="#topVendorsSection" class="btn btn-student-info btn-lg" data-i18n="hero_btn_vendors">
+              <i class="fa-solid fa-star"></i> Top Rated Vendors
+            </a>
+          </div>
+        </div>
+
+        <!-- Live Pulse Stat Cards Panel -->
+        <div class="hero-stats-panel">
+          <div class="stats-panel-header">
+            <h3 data-i18n="hero_stats_title"><i class="fa-solid fa-tower-broadcast"></i> Nagpur Live City Pulse</h3>
+            <span class="live-indicator"><span class="live-dot"></span> LIVE</span>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon bg-navy"><i class="fa-solid fa-map-pin"></i></div>
+              <div class="stat-info">
+                <div class="stat-number" id="statActiveMarkets">7</div>
+                <div class="stat-label" data-i18n="stat_markets_label">Monitored Market Hubs</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon bg-green"><i class="fa-solid fa-store"></i></div>
+              <div class="stat-info">
+                <div class="stat-number" id="statTotalVendors">14,820</div>
+                <div class="stat-label" data-i18n="stat_vendors_label">Registered Street Vendors</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon bg-saffron"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+              <div class="stat-info">
+                <div class="stat-number" id="statTodayUpi">₹48.6 L</div>
+                <div class="stat-label" data-i18n="stat_upi_label">Today's UPI Volume (41,200 txn)</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon bg-maroon"><i class="fa-solid fa-shield-check"></i></div>
+              <div class="stat-info">
+                <div class="stat-number" id="statGrievanceRate">94.8%</div>
+                <div class="stat-label" data-i18n="stat_grievance_label">NMC Grievance Resolution</div>
+              </div>
+            </div>
+          </div>
+          <div class="stat-footer-note" data-i18n="stat_footer_note">
+            <i class="fa-solid fa-circle-info"></i> Calibrated via UPI/POS transaction density & TVC geolocation census
+            2026.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== INTERACTIVE NAGPUR FOOTFALL & TRANSACTION MAP ==================== -->
+    <section id="nagpurMapSection" class="section-container">
+      <div class="container">
+
+        <div class="section-header flex-header">
+          <div>
+            <span class="section-tag" data-i18n="map_tag"><i class="fa-solid fa-satellite"></i> Real-time Geolocation
+              Engine</span>
+            <h2 class="section-heading" data-i18n="map_heading">Nagpur Market Foot-Traffic & UPI Transaction Density Map
+            </h2>
+            <p class="section-subtext" data-i18n="map_subtext">
+              Select any hour of the day to visualize market rush hours, crowd density, and active street vendor
+              clusters across Sitabuldi, Sadar, Dharampeth, Itwari, and Mahal.
+            </p>
+          </div>
+          <div class="time-controls">
+            <button class="preset-btn active" id="btnFilterAll" onclick="filterMapCategory('all')"
+              data-i18n="filter_all">All Markets</button>
+            <button class="preset-btn" id="btnFilterFood" onclick="filterMapCategory('food')"><i
+                class="fa-solid fa-bowl-food"></i> <span data-i18n="filter_food">Food Streets</span></button>
+            <button class="preset-btn" id="btnFilterShopping" onclick="filterMapCategory('shopping')"><i
+                class="fa-solid fa-bag-shopping"></i> <span data-i18n="filter_shopping">Shopping Hubs</span></button>
+            <button class="preset-btn" id="btnFilterMandi" onclick="filterMapCategory('mandi')"><i
+                class="fa-solid fa-carrot"></i> <span data-i18n="filter_mandi">Mandis</span></button>
+          </div>
+        </div>
+
+        <!-- Hourly Rush Hour Time Slider Widget -->
+        <div class="time-simulator-card">
+          <div class="simulator-header">
+            <div class="time-readout">
+              <span class="time-label" data-i18n="sim_time_label">Simulated Time of Day:</span>
+              <span class="time-display" id="currentTimeDisplay">07:00 PM</span>
+              <span class="time-period-badge" id="timePeriodBadge">Evening Shopping Peak</span>
+            </div>
+            <div class="time-controls">
+              <button class="btn-icon-round" id="btnPlayTime" title="Play 24hr Rush Simulation"
+                onclick="toggleTimeAnimation()">
+                <i class="fa-solid fa-play" id="playIcon"></i>
+              </button>
+              <button class="preset-btn" onclick="setTimeHour(8)" data-i18n="btn_mandi_rush">08:00 AM (Mandi
+                Rush)</button>
+              <button class="preset-btn" onclick="setTimeHour(13)" data-i18n="btn_lunch_rush">01:00 PM (Lunch)</button>
+              <button class="preset-btn active" onclick="setTimeHour(19)" data-i18n="btn_evening_rush">07:00 PM (Evening
+                Peak)</button>
+              <button class="preset-btn" onclick="setTimeHour(21)" data-i18n="btn_night_food">09:00 PM (Night
+                Food)</button>
+            </div>
+          </div>
+          <div class="slider-container">
+            <div class="slider-ticks">
+              <span>06 AM</span>
+              <span>09 AM</span>
+              <span>12 PM</span>
+              <span>03 PM</span>
+              <span>06 PM</span>
+              <span>09 PM</span>
+              <span>11 PM</span>
+            </div>
+            <input type="range" id="timeSlider" min="6" max="23" value="19" step="1" class="time-range-input"
+              oninput="handleTimeSliderChange(this.value)" />
+          </div>
+          <div class="simulator-footer">
+            <div class="legend-item"><span class="legend-dot dot-green"></span> <span data-i18n="legend_low">Low Rush
+                (&lt; 2,000/hr)</span></div>
+            <div class="legend-item"><span class="legend-dot dot-yellow"></span> <span data-i18n="legend_mod">Moderate
+                (2,000 - 5,000/hr)</span></div>
+            <div class="legend-item"><span class="legend-dot dot-orange"></span> <span data-i18n="legend_heavy">Heavy
+                Rush (5,000 - 8,000/hr)</span></div>
+            <div class="legend-item"><span class="legend-dot dot-red"></span> <span data-i18n="legend_peak">Peak
+                Congestion (&gt; 8,000/hr)</span></div>
+            <div class="legend-item ml-auto" data-i18n="legend_live_hint"><i
+                class="fa-solid fa-circle-nodes text-primary"></i> Live Heatmap driven by UPI payments/min</div>
+          </div>
+        </div>
+
+        <!-- Map & Market Analytics Layout -->
+        <div class="map-layout-grid">
+          <!-- Leaflet Map Canvas Container -->
+          <div class="map-wrapper">
+            <div id="nagpurLeafletMap" class="leaflet-map-canvas"></div>
+            <div class="map-floating-legend">
+              <strong data-i18n="map_layer_title"><i class="fa-solid fa-layer-group"></i> Layer Overview</strong>
+              <div style="margin-top:4px;"><span id="mapVendorCount">9 Stalls Mapped</span></div>
+            </div>
+          </div>
+
+          <!-- Selected Market Zone Details Card -->
+          <div class="market-details-card" id="marketDetailsCard">
+            <div class="market-card-header">
+              <span class="zone-tag" id="detailMarketZone">NMC Zone 2 (Dharampeth/Sitabuldi)</span>
+              <h3 id="detailMarketName" style="color:#0f2b5c; font-size:1.15rem; font-weight:800;">Sitabuldi Main Road &
+                Metro Plaza</h3>
+              <p class="market-loc" id="detailMarketLoc"><i class="fa-solid fa-location-dot"></i> Variety Square,
+                Sitabuldi, Nagpur 440012</p>
+            </div>
+
+            <!-- Market Dynamic Stats -->
+            <div class="market-metrics-grid">
+              <div class="metric-box">
+                <span class="metric-val" id="detailFootfall">8,450</span>
+                <span class="metric-lbl" data-i18n="detail_visitors">Visitors / Hour</span>
+              </div>
+              <div class="metric-box">
+                <span class="metric-val text-success" id="detailUpiCount">640 txn/hr</span>
+                <span class="metric-lbl" data-i18n="detail_digital">Digital Payment Vol</span>
+              </div>
+              <div class="metric-box">
+                <span class="metric-val" id="detailVendorCount">380</span>
+                <span class="metric-lbl" data-i18n="detail_vendors">Active Street Vendors</span>
+              </div>
+              <div class="metric-box">
+                <span class="metric-val text-warning" id="detailPeakTime">06:30 - 09:30 PM</span>
+                <span class="metric-lbl" data-i18n="detail_peak">Peak Rush Window</span>
+              </div>
+            </div>
+
+            <!-- Rush Bar Chart Comparison -->
+            <div class="hourly-spark-section">
+              <div class="spark-title">
+                <span data-i18n="spark_title"><i class="fa-solid fa-chart-column"></i> Footfall Curve Today</span>
+                <span class="text-muted text-sm" data-i18n="spark_sub">UPI Transaction Volume vs Hour</span>
+              </div>
+              <div class="hourly-bars" id="hourlyBarsContainer">
+                <!-- Dynamically generated bars -->
+              </div>
+            </div>
+
+            <!-- Vending Zone Policy Status -->
+            <div class="vending-policy-box" id="detailPolicyBox">
+              <div class="policy-badge"><i class="fa-solid fa-shield-check"></i> Green Vending Zone</div>
+              <p class="policy-text">Designated hawkers street with smart digital QR kiosks. Vending active 06:00 AM -
+                10:30 PM.</p>
+            </div>
+
+            <!-- Quick Action for this Market -->
+            <div class="mt-auto">
+              <button class="btn btn-gov-outline btn-sm w-100" onclick="viewMarketVendors()"
+                data-i18n="btn_view_vendors_here">
+                <i class="fa-solid fa-list-check"></i> View Vendors in this Market
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== STREET VENDOR DIRECTORY & SEARCH ==================== -->
+    <section id="vendorsSection" class="section-container bg-surface">
+      <div class="container">
+
+        <div class="section-header">
+          <span class="section-tag" data-i18n="dir_tag"><i class="fa-solid fa-shop"></i> Registered Hawkers
+            Directory</span>
+          <h2 class="section-heading" data-i18n="dir_heading">Nagpur Street Vendors Directory</h2>
+          <p class="section-subtext" data-i18n="dir_subtext">
+            Discover verified local street entrepreneurs, filter by specialty, inspect cleanliness certifications, and
+            share your direct feedback.
+          </p>
+
+          <div class="vendor-search-bar">
+            <div class="search-input-wrap">
+              <i class="fa-solid fa-magnifying-glass search-icon"></i>
+              <input type="text" id="vendorSearchInput" data-i18n-placeholder="search_placeholder"
+                placeholder="Search vendor name, market, or food item (e.g. Tarri Pohe, Chaat, Sadar, Mahal)..."
+                oninput="handleVendorSearch(this.value)" />
+            </div>
+            <select id="vendorCategoryFilter" class="filter-select" onchange="applyVendorFilters()">
+              <option value="all" data-i18n-opt="cat_all">All Categories</option>
+              <option value="Street Food" data-i18n-opt="cat_food">🍲 Street Food & Snacks</option>
+              <option value="Fruits & Veggies" data-i18n-opt="cat_fruits">🥦 Fruits & Fresh Vegetables</option>
+              <option value="Apparel & Garments" data-i18n-opt="cat_clothes">👕 Clothes & Garments</option>
+              <option value="Tea & Beverages" data-i18n-opt="cat_tea">☕ Tea, Juices & Beverages</option>
+              <option value="Handicrafts & Artisans" data-i18n-opt="cat_art">🎨 Traditional Artisans & Crafts</option>
+              <option value="Accessories & Hardware" data-i18n-opt="cat_mobile">📱 Mobile & Accessories</option>
+            </select>
+            <select id="vendorZoneFilter" class="filter-select" onchange="applyVendorFilters()">
+              <option value="all" data-i18n-opt="zone_all">All Nagpur Zones</option>
+              <option value="Sitabuldi">Sitabuldi</option>
+              <option value="Sadar">Sadar Bazar</option>
+              <option value="Dharampeth">Dharampeth</option>
+              <option value="Itwari">Itwari Sarafa</option>
+              <option value="Mahal">Mahal Badkas Chowk</option>
+              <option value="Gandhibagh">Gandhibagh</option>
+              <option value="Cotton Market">Cotton Market</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Vendor Cards Grid -->
+        <div class="vendor-cards-grid" id="vendorCardsGrid">
+          <!-- Dynamically populated from api-service.js -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state hidden text-center mt-3" id="vendorEmptyState">
+          <i class="fa-solid fa-store-slash" style="font-size:2.5rem; color:#94a3b8;"></i>
+          <h3 style="color:#0f2b5c; margin-top:0.5rem;" data-i18n="no_vendors_title">No Vendors Found</h3>
+          <p class="text-muted" data-i18n="no_vendors_desc">Try searching with another keyword or resetting the category
+            filter.</p>
+          <button class="btn btn-gov-outline btn-sm mt-2" onclick="resetVendorFilters()"
+            data-i18n="btn_reset_filters">Reset Filters</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== TOP RATED VENDORS SPOTLIGHT ==================== -->
+    <section id="topVendorsSection" class="section-container">
+      <div class="container">
+
+        <div class="section-header text-center-header">
+          <span class="section-tag" data-i18n="top_tag"><i class="fa-solid fa-crown"></i> People's Choice</span>
+          <h2 class="section-heading" data-i18n="top_heading">Top Rated Nagpur Vendors</h2>
+          <p class="section-subtext" data-i18n="top_subtext">
+            Celebrated street food pioneers and trusted traders with verified 5-star citizen reviews, FSSAI hygiene
+            grades, and 100% digital payment acceptance.
+          </p>
+        </div>
+
+        <!-- Top Vendor Cards Grid -->
+        <div class="top-rated-grid" id="topRatedGrid">
+          <!-- Populated from Javascript -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== CITIZEN FEEDBACK & GRIEVANCE REDRESSAL ==================== -->
+    <section id="grievanceSection" class="section-container bg-surface">
+      <div class="container">
+        <div class="grievance-split-grid">
+
+          <!-- Left Column: File Complaint / Feedback Form -->
+          <div class="grievance-form-card">
+            <div class="card-header-styled">
+              <span class="sub-badge" data-i18n="grv_tag"><i class="fa-solid fa-shield-halved"></i> NMC Citizen
+                Redressal Desk</span>
+              <h3 data-i18n="grv_heading" style="color:#0f2b5c; font-size:1.15rem; font-weight:800;">Submit Complaint or
+                Civic Feedback</h3>
+              <p class="text-muted text-sm" data-i18n="grv_desc">Report pathway congestion, garbage dumping, hygiene
+                violations, or rate vendor service. Generates a trackable NMC Ticket ID.</p>
+            </div>
+
+            <form id="publicComplaintForm" onsubmit="handleCitizenComplaintSubmit(event)">
+              <div class="form-group-row">
+                <div class="form-group">
+                  <label for="citizenName"><span data-i18n="lbl_name">Your Full Name</span> <span
+                      class="req">*</span></label>
+                  <input type="text" id="citizenName" required placeholder="e.g. Anand Deshmukh" />
+                </div>
+                <div class="form-group">
+                  <label for="citizenPhone"><span data-i18n="lbl_phone">Phone Number</span> <span
+                      class="req">*</span></label>
+                  <input type="tel" id="citizenPhone" required placeholder="e.g. 98220XXXXX" />
+                </div>
+              </div>
+
+              <div class="form-group-row">
+                <div class="form-group">
+                  <label for="complaintMarket"><span data-i18n="lbl_market">Market Location</span> <span
+                      class="req">*</span></label>
+                  <select id="complaintMarket" required>
+                    <option value="" data-i18n-opt="opt_select_market">Select Market Area...</option>
+                    <option value="Sitabuldi">Sitabuldi Main Road</option>
+                    <option value="Sadar">Sadar Bazar</option>
+                    <option value="Dharampeth">Dharampeth WHC Road</option>
+                    <option value="Itwari">Itwari Sarafa & Kirana</option>
+                    <option value="Mahal">Mahal Badkas Chowk</option>
+                    <option value="Gandhibagh">Gandhibagh Cloth Market</option>
+                    <option value="Cotton Market">Cotton Market Mandi</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="complaintVendor"><span data-i18n="lbl_vendor_opt">Specific Vendor
+                      (Optional)</span></label>
+                  <select id="complaintVendor">
+                    <option value="" data-i18n-opt="opt_gen_market_issue">General Market Area Issue (No specific vendor)
+                    </option>
+                    <option value="1">Ramesh Chaat Corner (Sitabuldi)</option>
+                    <option value="2">Shriram Tarri Poha (Dharampeth)</option>
+                    <option value="3">Santosh Pav Bhaji (Sadar)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="complaintCategory"><span data-i18n="lbl_category">Issue Category</span> <span
+                    class="req">*</span></label>
+                <select id="complaintCategory" required>
+                  <option value="Footpath Encroachment" data-i18n-opt="opt_issue_encroach">🚶 Footpath Encroachment /
+                    Walking Obstruction</option>
+                  <option value="Garbage & Cleanliness" data-i18n-opt="opt_issue_garbage">🗑️ Garbage & Food Waste
+                    Dumping</option>
+                  <option value="Hygiene & Food Safety" data-i18n-opt="opt_issue_hygiene">🧼 Hygiene / Food Safety
+                    Concern</option>
+                  <option value="Overcharging & Pricing" data-i18n-opt="opt_issue_price">💰 Overcharging / Unfair
+                    Pricing</option>
+                  <option value="Positive Feedback & Appreciation" data-i18n-opt="opt_issue_praise">🌟 Positive Vendor
+                    Appreciation / Praise</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="complaintDescription"><span data-i18n="lbl_desc">Detailed Description</span> <span
+                    class="req">*</span></label>
+                <textarea id="complaintDescription" rows="3" required data-i18n-placeholder="ph_complaint_desc"
+                  placeholder="Describe the exact location, problem observed, or appreciation note..."></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-gov-maroon w-100 btn-lg" data-i18n="btn_submit_complaint">
+                <i class="fa-solid fa-paper-plane"></i> Submit to Nagpur Municipal TVC
+              </button>
+            </form>
+          </div>
+
+          <!-- Right Column: Track Ticket & Recent Community Feedback -->
+          <div class="grievance-tracker-card">
+            <div class="card-header-styled">
+              <span class="sub-badge" data-i18n="grv_track_tag"><i class="fa-solid fa-magnifying-glass"></i> Live
+                Grievance Status</span>
+              <h3 data-i18n="grv_track_heading" style="color:#0f2b5c; font-size:1.15rem; font-weight:800;">Track Your
+                Ticket</h3>
+              <p class="text-muted text-sm" data-i18n="grv_track_desc">Check the real-time resolution progress of
+                complaints lodged with NMC TVC inspectors.</p>
+            </div>
+
+            <!-- Search Ticket ID Form -->
+            <div class="ticket-lookup-box">
+              <div style="display:flex; gap:0.5rem;">
+                <input type="text" id="ticketSearchInput" data-i18n-placeholder="track_placeholder"
+                  placeholder="Enter Ticket ID (e.g. NMC-LV-8821)"
+                  style="flex:1; padding:0.5rem; border:1px solid #cbd5e1; border-radius:4px;" />
+                <button class="btn btn-gov-primary btn-sm" onclick="lookupTicket()"><i
+                    class="fa-solid fa-magnifying-glass"></i> <span data-i18n="btn_track">Track</span></button>
+              </div>
+              <div id="ticketResultBox" class="ticket-result-box hidden">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Recent Community Resolutions Feed -->
+            <div class="community-feed-wrap">
+              <h4 data-i18n="community_feed_heading"><i class="fa-solid fa-clock-rotate-left"></i> Recent Public
+                Complaints & Resolutions</h4>
+              <div class="feed-list" id="communityFeedList">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== STUDENT PROJECT & TECHNICAL ARCHITECTURE HIGHLIGHTS ==================== -->
+    <section class="section-container innovation-section">
+      <div class="container">
+        <div class="section-header text-center-header">
+          <span class="section-tag" data-i18n="inno_tag"><i class="fa-solid fa-graduation-cap"></i> Engineering Student
+            Project & Technical Innovation</span>
+          <h2 class="section-heading" data-i18n="inno_heading">How LokVyapar Transforms Nagpur's Urban Economy</h2>
+          <p class="section-subtext" data-i18n="inno_subtext">
+            Merging Digital Payment Footprints, Street Vendor Empowerment, and Municipal Crowd Intelligence without
+            expensive CCTV hardware.
+          </p>
+        </div>
+
+        <div class="innovation-grid">
+          <div class="innovation-card">
+            <div class="inno-icon"><i class="fa-solid fa-qrcode"></i></div>
+            <h3 data-i18n="inno_card1_title">UPI Footfall Proxy Algorithm</h3>
+            <p data-i18n="inno_card1_desc">Instead of expensive camera hardware, LokVyapar correlates real-time digital
+              UPI/QR payment frequency to calculate accurate pedestrian density and rush hours.</p>
+          </div>
+          <div class="innovation-card">
+            <div class="inno-icon"><i class="fa-solid fa-id-card-clip"></i></div>
+            <h3 data-i18n="inno_card2_title">PM SVANidhi Integration</h3>
+            <p data-i18n="inno_card2_desc">Every registered vendor is linked to central PM-SVANidhi credit scheme and
+              issued an NMC TVC digital verification badge for micro-loan facilitation.</p>
+          </div>
+          <div class="innovation-card">
+            <div class="inno-icon"><i class="fa-solid fa-layer-group"></i></div>
+            <h3 data-i18n="inno_card3_title">Smart Vending Zones</h3>
+            <p data-i18n="inno_card3_desc">Dynamic zoning (Green / Yellow / Red) prevents stampedes at Sitabuldi and
+              Sadar, directing shoppers to authorized hawking squares.</p>
+          </div>
+          <div class="innovation-card">
+            <div class="inno-icon"><i class="fa-solid fa-comments"></i></div>
+            <h3 data-i18n="inno_card4_title">Two-Way Accountability</h3>
+            <p data-i18n="inno_card4_desc">Citizens submit verified ratings and complaints; vendors get rush forecasts
+              to reduce food waste, and NMC officers resolve tickets with audited timestamps.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- ======================== VIEW 2: VENDOR STALL DASHBOARD ============= -->
+  <!-- ===================================================================== -->
+  <main id="vendorView" class="hidden">
+    <div class="container portal-container">
+
+      <!-- Vendor Profile Header Card -->
+      <div class="portal-profile-card vendor-theme-card">
+        <div class="profile-main-row">
+          <div class="profile-avatar-box">
+            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=150&auto=format&fit=crop&q=80"
+              alt="Ramesh Chaat" />
+          </div>
+          <div class="profile-info-content">
+            <div class="profile-badges-row">
+              <span class="badge-pill" style="background:#dcfce7; color:#166534;"><i class="fa-solid fa-circle"></i>
+                <span data-i18n="vendor_stall_open">Stall Open & Trading</span></span>
+              <span class="badge-pill"><i class="fa-solid fa-award"></i> <span data-i18n="vendor_svanidhi_badge">PM
+                  SVANidhi ID</span>: NAG-SVN-8812</span>
+              <span class="badge-pill"><i class="fa-solid fa-shield-check"></i> <span
+                  data-i18n="vendor_green_badge">Green Vending Zone Certified</span></span>
+            </div>
+            <h2 class="vendor-portal-title">Ramesh Chaat & Snack Corner</h2>
+            <p class="vendor-portal-sub">
+              <span><i class="fa-solid fa-location-dot"></i> Stall #42, Sitabuldi Main Road (Near Metro Station),
+                Nagpur</span> &bull;
+              <span><i class="fa-solid fa-utensils"></i> Sev Puri, Pani Puri, Dahi Papdi Chaat</span>
+            </p>
+          </div>
+          <div class="vendor-qr-box">
+            <div class="qr-mockup">
+              <i class="fa-solid fa-qrcode" style="font-size:1.5rem; color:#0f2b5c;"></i>
+              <span>UPI: rameshchaat@okhdfc</span>
+            </div>
+            <button class="btn btn-sm btn-gov-saffron" onclick="simulateUpiPayment()" data-i18n="vendor_test_upi_btn">
+              <i class="fa-solid fa-plus-circle"></i> Test UPI Txn (+₹60)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="portal-stats-grid">
+        <div class="stat-box-modern">
+          <div class="box-lbl" data-i18n="vp_stat_earnings">Today's Digital Earnings</div>
+          <div class="box-val" id="vendorDailyEarnings">₹4,920</div>
+          <div class="box-trend" data-i18n="vp_stat_trend_earn"><i class="fa-solid fa-arrow-up"></i> +14% vs yesterday
+          </div>
+        </div>
+
+        <div class="stat-box-modern">
+          <div class="box-lbl" data-i18n="vp_stat_txns">Digital UPI Transactions</div>
+          <div class="box-val" id="vendorTxnCount">72 Txns</div>
+          <div class="box-trend" style="color:#0f2b5c;" data-i18n="vp_stat_trend_txns"><i class="fa-solid fa-clock"></i>
+            8 mins ago</div>
+        </div>
+
+        <div class="stat-box-modern">
+          <div class="box-lbl" data-i18n="vp_stat_rating">People's Rating</div>
+          <div class="box-val">4.8 / 5.0</div>
+          <div class="box-trend" style="color:#d97706;" data-i18n="vp_stat_trend_rating">★ 342 Reviews</div>
+        </div>
+
+        <div class="stat-box-modern">
+          <div class="box-lbl" data-i18n="vp_stat_complaints">Complaints</div>
+          <div class="box-val" style="color:#16a34a;">0 Pending</div>
+          <div class="box-trend" data-i18n="vp_stat_trend_comp"><i class="fa-solid fa-check"></i> All Resolved</div>
+        </div>
+      </div>
+
+      <!-- Two Columns Layout -->
+      <div class="portal-two-col">
+        <!-- Left: Rush Forecast -->
+        <div class="portal-card">
+          <div class="portal-card-header">
+            <h3><i class="fa-solid fa-chart-line text-primary"></i> <span data-i18n="vp_forecast_title">Sitabuldi Market
+                Footfall Rush Forecast</span></h3>
+            <span class="time-period-badge badge-orange" data-i18n="vp_forecast_badge">Evening Peak Rush Ahead</span>
+          </div>
+
+          <div class="forecast-alert-box">
+            <i class="fa-solid fa-bullhorn alert-icon"></i>
+            <div>
+              <strong data-i18n="vp_forecast_alert_title">High Footfall Alert (06:30 PM - 09:30 PM)</strong>
+              <p data-i18n="vp_forecast_alert_desc">Sitabuldi Metro foot-traffic is projected at 8,450 people/hour
+                tonight. Recommended raw material prep: +25% Pani Puri puris & Sev stock.</p>
+            </div>
+          </div>
+
+          <div class="forecast-timeline">
+            <div class="timeline-slot">
+              <span>02:00 PM - 04:00 PM</span>
+              <span>1,200 / hr</span>
+              <span class="text-muted">14 orders</span>
+            </div>
+            <div class="timeline-slot">
+              <span>04:00 PM - 06:00 PM</span>
+              <span>4,500 / hr</span>
+              <span class="text-muted">26 orders</span>
+            </div>
+            <div class="timeline-slot current">
+              <span>06:00 PM - 09:00 PM (Now)</span>
+              <span style="color:#dc2626; font-weight:800;">8,450 / hr (Peak)</span>
+              <span style="color:#dc2626;">🔥 High Demand</span>
+            </div>
+            <div class="timeline-slot">
+              <span>09:00 PM - 10:30 PM</span>
+              <span>3,200 / hr</span>
+              <span class="text-muted">Closing Window</span>
+            </div>
+          </div>
+
+          <!-- PM SVANidhi Status -->
+          <div class="svanidhi-card mt-3" onclick="openSvanidhiModal()" style="cursor:pointer;" title="Click to view PM SVANidhi Government Scheme details">
+            <div class="sv-header">
+              <i class="fa-solid fa-building-columns text-success" style="font-size:1.5rem;"></i>
+              <div>
+                <strong data-i18n="vp_svanidhi_title">PM SVANidhi Loan Tranche 2 (₹20,000)</strong>
+                <p data-i18n="vp_svanidhi_desc">On-time Digital UPI Repayment Incentive: 7% Interest Subsidy Credited to
+                  Bank of Maharashtra.</p>
+              </div>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" style="width: 78%;"></div>
+            </div>
+            <div class="progress-labels">
+              <span data-i18n="vp_svanidhi_repaid">Repaid: ₹15,600</span>
+              <span data-i18n="vp_svanidhi_remaining">Remaining: ₹4,400</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Customer Reviews Stream -->
+        <div class="portal-card">
+          <div class="portal-card-header">
+            <h3><i class="fa-solid fa-comments text-accent"></i> <span data-i18n="vp_reviews_title">Customer Reviews &
+                Feedback</span></h3>
+            <span class="badge-pill" data-i18n="vp_reviews_feed_badge">Live Feed</span>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:0.75rem;">
+            <div class="feed-item">
+              <div class="feed-header">
+                <strong>Shruti Deshpande</strong>
+                <span style="color:#d97706; font-weight:700;">★ 5.0 (Superb Taste)</span>
+              </div>
+              <p class="text-sm">"The Dahi Puri here is unbeatable! Crispy puris, sweet chilled curd, and extremely
+                hygienic setup."</p>
+              <small class="text-muted">Today, 15:20 IST</small>
+            </div>
+
+            <div class="feed-item">
+              <div class="feed-header">
+                <strong>Rohit Meshram</strong>
+                <span style="color:#d97706; font-weight:700;">★ 5.0 (100% Cleanliness)</span>
+              </div>
+              <p class="text-sm">"They always use food-grade gloves and pure RO purified water for pani puri."</p>
+              <small class="text-muted">Yesterday, 19:40 IST</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- ======================== VIEW 3: NMC MUNICIPAL ADMIN PORTAL ========= -->
+  <!-- ===================================================================== -->
+  <main id="nmcView" class="hidden">
+    <div class="container portal-container">
+
+      <!-- Command Header -->
+      <div class="portal-profile-card nmc-theme-card">
+        <div class="profile-main-row">
+          <div class="profile-avatar-box nmc-seal">
+            <i class="fa-solid fa-landmark-dome"></i>
+          </div>
+          <div class="profile-info-content">
+            <div class="profile-badges-row">
+              <span class="badge-pill" style="background:#dcfce7; color:#166534;"><i class="fa-solid fa-circle"></i>
+                <span data-i18n="nmc_cmd_active">NMC TVC Command Room Active</span></span>
+              <span class="badge-pill"><i class="fa-solid fa-city"></i> <span data-i18n="nmc_city_corp">Nagpur Municipal
+                  Corporation</span></span>
+              <span class="badge-pill" style="background:#fef3c7; color:#92400e;"><i class="fa-solid fa-users-gear"></i>
+                <span data-i18n="nmc_tvc_badge">Town Vending Committee (TVC)</span></span>
+            </div>
+            <h2 class="vendor-portal-title" data-i18n="nmc_cmd_title">NMC Street Vendor Oversight & Crowd Management
+              Console</h2>
+            <p class="vendor-portal-sub">
+              <span><i class="fa-solid fa-map-location"></i> <span data-i18n="nmc_office_loc">Civil Lines, Head Office,
+                  Nagpur 440001</span></span> &bull;
+              <span><i class="fa-solid fa-user-shield"></i> <span data-i18n="nmc_officer_incharge">Officer Incharge: TVC
+                  Executive Director</span></span>
+            </p>
+          </div>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <button class="btn btn-gov-saffron btn-sm" onclick="openModal('newVendorModal')"
+              data-i18n="btn_register_vendor">
+              <i class="fa-solid fa-user-plus"></i> Register New Vendor
+            </button>
+            <button class="btn btn-gov-outline btn-sm" onclick="exportNmcReport()" data-i18n="btn_export_csv">
+              <i class="fa-solid fa-download"></i> Export TVC Audit (CSV)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- City-Wide Statistical Overview -->
+      <div class="portal-stats-grid">
+        <div class="stat-box-modern">
+          <div class="box-lbl" data-i18n="nmc_stat_total_vendors">Total Registered Vendors</div>
+          <div class="box-val">14,820</div>
+          <div class="box-trend" data-i18n="nmc_stat_trend_vendors"><i class="fa-solid fa-arrow-up"></i> +120 new this
+            month</div>
+        </div>
+
+        <div class="stat-box-modern">
+          <div class="box-lbl" data-i18n="nmc_stat_digital_flow">Today's Tracked Digital Flow</div>
+          <div class="box-val">₹48.6 Lakh</div>
+          <div class="box-trend" style="color:#0f2b5c;" data-i18n="nmc_stat_trend_flow"><i
+              class="fa-solid fa-receipt"></i> 41,200 UPI txns</div>
+        </div>
+
+        <div class="stat-box-modern">
+          <div class="box-lbl" data-i18n="nmc_stat_queue">Citizen Complaints in Queue</div>
+          <div class="box-val" style="color:#dc2626;" id="nmcOpenComplaintsCount">3 Pending</div>
+          <div class="box-trend" style="color:#ea580c;" data-i18n="nmc_stat_trend_queue"><i
+              class="fa-solid fa-clock"></i> 2 High Urgency</div>
+        </div>
+
+        <div class="stat-box-modern">
+          <div class="box-lbl" data-i18n="nmc_stat_hubs">Designated Vending Hubs</div>
+          <div class="box-val">28 Green / 8 Yellow</div>
+          <div class="box-trend" data-i18n="nmc_stat_trend_hubs"><i class="fa-solid fa-circle-check"></i> Zero Red Zone
+            Encroachments</div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs for NMC -->
+      <div class="nmc-sub-nav">
+        <button class="nmc-nav-btn active" id="btnNmcTabComplaints" onclick="showNmcTab('complaints')">
+          <i class="fa-solid fa-bullhorn"></i> <span data-i18n="nmc_tab_triage">Citizen Complaints Triage</span>
+        </button>
+        <button class="nmc-nav-btn" id="btnNmcTabCensus" onclick="showNmcTab('census')">
+          <i class="fa-solid fa-users"></i> <span data-i18n="nmc_tab_census">Nagpur Vendor Census & Zones</span>
+        </button>
+        <button class="nmc-nav-btn" id="btnNmcTabHeatmap" onclick="showNmcTab('heat')">
+          <i class="fa-solid fa-fire"></i> <span data-i18n="nmc_tab_heat">Live UPI Crowd Heat Analytics</span>
+        </button>
+      </div>
+
+      <!-- TAB 1: CITIZEN GRIEVANCES TRIAGE QUEUE -->
+      <div id="nmcTabComplaints" class="nmc-tab-content">
+        <div class="portal-card">
+          <div class="portal-card-header">
+            <div>
+              <h3><i class="fa-solid fa-list-check text-primary"></i> <span data-i18n="nmc_triage_title">Citizen
+                  Grievances & Redressal Queue</span></h3>
+              <p class="text-sm text-muted" data-i18n="nmc_triage_sub">Review, investigate, assign TVC field inspectors,
+                and mark complaints resolved.</p>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="th_ticket_id">Ticket ID</th>
+                  <th data-i18n="th_citizen_phone">Citizen / Phone</th>
+                  <th data-i18n="th_market_area">Market Area</th>
+                  <th data-i18n="th_vendor_involved">Vendor Involved</th>
+                  <th data-i18n="th_category">Category</th>
+                  <th data-i18n="th_status">Status</th>
+                  <th data-i18n="th_actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="nmcComplaintsTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: VENDOR CENSUS & DIRECTORY -->
+      <div id="nmcTabCensus" class="nmc-tab-content hidden">
+        <div class="portal-card">
+          <div class="portal-card-header">
+            <div>
+              <h3><i class="fa-solid fa-building-user text-success"></i> <span data-i18n="nmc_census_title">Registered
+                  Street Hawkers Master Census 2026</span></h3>
+              <p class="text-sm text-muted" data-i18n="nmc_census_sub">NMC Town Vending Committee Geocoded Registry</p>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="th_svanidhi_id">Vendor / TVC ID</th>
+                  <th data-i18n="th_stall_proprietor">Stall Name & Proprietor</th>
+                  <th data-i18n="th_zone_market">NMC Zone & Market</th>
+                  <th data-i18n="th_cat">Category</th>
+                  <th data-i18n="th_rating">Rating</th>
+                  <th data-i18n="th_daily_upi">Daily UPI Avg</th>
+                  <th data-i18n="th_zoning_policy">Vending Zone</th>
+                  <th data-i18n="th_qr_code">QR Code</th>
+                </tr>
+              </thead>
+              <tbody id="nmcCensusTableBody">
+                <!-- Populated via Javascript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: LIVE CROWD HEAT ANALYTICS -->
+      <div id="nmcTabHeat" class="nmc-tab-content hidden">
+        <div class="portal-card">
+          <div class="portal-card-header">
+            <h3><i class="fa-solid fa-fire text-danger"></i> <span data-i18n="nmc_heat_title">Nagpur Municipal Crowd
+                Density & UPI Heat Index</span></h3>
+            <span class="badge-pill" style="background:#eff6ff; color:#1e40af;"><i class="fa-solid fa-circle"></i> <span
+                data-i18n="nmc_heat_npci_sync">Live Sync with NPCI / POS aggregators</span></span>
+          </div>
+
+          <div class="crowd-summary-grid">
+            <div class="crowd-card">
+              <h4>Sitabuldi Main Road</h4>
+              <div class="crowd-stat red-text">8,450 / hr</div>
+              <div class="crowd-meter">
+                <div class="meter-bar bg-danger" style="width: 92%;"></div>
+              </div>
+              <p class="crowd-note"><i class="fa-solid fa-triangle-exclamation text-danger"></i> Heavy congestion near
+                Variety Square. Traffic police alerted.</p>
+            </div>
+            <div class="crowd-card">
+              <h4>Sadar Residency Road</h4>
+              <div class="crowd-stat orange-text">5,120 / hr</div>
+              <div class="crowd-meter">
+                <div class="meter-bar bg-warning" style="width: 68%;"></div>
+              </div>
+              <p class="crowd-note"><i class="fa-solid fa-circle-check text-success"></i> Food street moving smoothly.
+                Adequate walkway clearance.</p>
+            </div>
+            <div class="crowd-card">
+              <h4>Itwari Sarafa & Kirana</h4>
+              <div class="crowd-stat orange-text">6,400 / hr</div>
+              <div class="crowd-meter">
+                <div class="meter-bar bg-warning" style="width: 75%;"></div>
+              </div>
+              <p class="crowd-note"><i class="fa-solid fa-triangle-exclamation text-warning"></i> Evening peak wholesale
+                shoppers. Handcarts restricted to designated bays.</p>
+            </div>
+            <div class="crowd-card">
+              <h4>Dharampeth WHC Road</h4>
+              <div class="crowd-stat green-text">3,200 / hr</div>
+              <div class="crowd-meter">
+                <div class="meter-bar bg-success" style="width: 44%;"></div>
+              </div>
+              <p class="crowd-note"><i class="fa-solid fa-circle-check text-success"></i> Optimum crowd density. 5
+                additional evening hawking slots available.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ==================== 6. OFFICIAL FOOTER (NIC & STUDENT DEV CELL STYLE) ==================== -->
+  <footer class="main-footer">
+    <div class="footer-top-strip">
+      <div class="container footer-top-inner">
+        <div class="footer-gov-credits">
+          <span class="gov-emblem-small">म</span>
+          <span data-i18n="footer_gov_dept">Government of Maharashtra Urban Development Dept. &bull; Nagpur Municipal
+            Corporation</span>
+        </div>
+        <div style="font-size:0.75rem; color:#fcd34d;">
+          <i class="fa-solid fa-shield-check"></i> <span data-i18n="footer_nic_compliant">Compliant with National
+            Informatics Centre (NIC) Web Guidelines</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-content">
+      <div class="footer-col brand-col">
+        <h4 data-i18n="footer_col1_title">LokVyapar Mahaportal</h4>
+        <p class="footer-desc" data-i18n="footer_col1_desc">
+          A Smart Urban Governance & Vendor Empowerment Initiative designed for Nagpur City. Developed by 3rd Year
+           Students in academic collaboration with Nagpur Municipal Corporation.
+        </p>
+        <div class="student-credit-box">
+          <strong data-i18n="footer_student_dev">🎓 Developed by: Department of AI & DS,
+            Nagpur</strong><br />
+          <span data-i18n="footer_academic_note">Maharashtra State University 3rd Year Project 2026-27</span>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4 data-i18n="footer_col2_title">Key Markets in Nagpur</h4>
+        <ul class="footer-links">
+          <li><a href="#" onclick="selectMarketFromFooter('Sitabuldi'); return false;"
+              data-i18n="link_sitabuldi">Sitabuldi Main Road & Metro</a></li>
+          <li><a href="#" onclick="selectMarketFromFooter('Sadar'); return false;" data-i18n="link_sadar">Sadar Bazar &
+              Residency Road</a></li>
+          <li><a href="#" onclick="selectMarketFromFooter('Dharampeth'); return false;"
+              data-i18n="link_dharampeth">Dharampeth Traffic Park Promenade</a></li>
+          <li><a href="#" onclick="selectMarketFromFooter('Itwari'); return false;" data-i18n="link_itwari">Itwari
+              Sarafa & Kirana Oli</a></li>
+          <li><a href="#" onclick="selectMarketFromFooter('Mahal'); return false;" data-i18n="link_mahal">Mahal Badkas
+              Chowk & Shivaji Statue</a></li>
+          <li><a href="#" onclick="selectMarketFromFooter('Cotton Market'); return false;"
+              data-i18n="link_cotton">Cotton Market Fresh Produce Mandi</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 data-i18n="footer_col3_title">Portals & Services</h4>
+        <ul class="footer-links">
+          <li><a href="#" onclick="switchView('citizen'); return false;" data-i18n="link_citizen_portal">Citizen Public
+              Portal</a></li>
+          <li><a href="#" onclick="openModal('vendorLoginModal'); return false;" data-i18n="link_vendor_login">Vendor
+              Stall Login</a></li>
+          <li><a href="#" onclick="openModal('nmcLoginModal'); return false;" data-i18n="link_nmc_console">NMC Officer
+              Admin Console</a></li>
+          <li><a href="#" onclick="openModal('complaintModal'); return false;" data-i18n="link_file_complaint">File
+              Citizen Grievance</a></li>
+          <li><a href="#" onclick="openStudentProjectModal(); return false;" data-i18n="link_student_dossier">Student
+              Project Dossier & Report</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 data-i18n="footer_col4_title">Civic Emergency & Help</h4>
+        <p class="emergency-text">
+          <strong data-i18n="footer_helpline">NMC TVC Helpline: 1800-233-3764</strong><br />
+          <span data-i18n="footer_email">Email: support@lokvyapar-nagpur.gov.in</span><br />
+          <span data-i18n="footer_office">Address: NMC Head Office, Civil Lines, Nagpur 440001</span>
+        </p>
+        <div style="margin-top:0.75rem; font-size:0.725rem; color:#94a3b8;">
+          <i class="fa-solid fa-code"></i> <span data-i18n="footer_rest_ready">REST API Architecture Ready ;
+            LocalStorage Data Baseline</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
+        <p data-i18n="footer_copyright">&copy; 2026 LokVyapar Nagpur. All Rights Reserved. Compliant with Maharashtra
+          Gov Standards.</p>
+        <div class="footer-bottom-links">
+          <a href="#" onclick="openStudentProjectModal(); return false;" data-i18n="footer_rti">Right to Information
+            (RTI 2005)</a> &bull;
+          <a href="#" onclick="openStudentProjectModal(); return false;" data-i18n="footer_charter">Citizen Charter</a>
+          &bull;
+          <a href="#" onclick="openStudentProjectModal(); return false;" data-i18n="footer_bylaws">TVC By-Laws 2014</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- ============================ MODALS ================================= -->
+  <!-- ===================================================================== -->
+
+  <!-- 1. VENDOR GOVERNMENT SCHEMES & SUPPORT MODAL -->
+  <div class="modal-backdrop hidden" id="svanidhiModal">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <i class="fa-solid fa-landmark text-primary" style="font-size:1.4rem;"></i>
+          <h3 data-i18n="svanidhi_modal_title">Government Schemes & Vendor Support</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('svanidhiModal')" aria-label="Close government schemes">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Featured PM SVANidhi Scheme -->
+        <div class="scheme-modal-hero">
+          <div style="display:flex; align-items:flex-start; gap:0.8rem;">
+            <div style="font-size:2rem; line-height:1;">💰</div>
+            <div>
+              <h4 data-i18n="svanidhi_hero_title">PM SVANidhi Micro-Credit Scheme for Street Vendors</h4>
+              <p data-i18n="svanidhi_hero_desc">
+                Government support for street vendors through working-capital loans, interest subsidy and digital-payment incentives. LokVyapar connects the vendor portal with PM SVANidhi status and vendor verification information.
+              </p>
+            </div>
+          </div>
+          <div class="scheme-badge-row">
+            <span class="scheme-badge-item"><i class="fa-solid fa-shield-halved"></i> Zero Collateral</span>
+            <span class="scheme-badge-item"><i class="fa-solid fa-percent"></i> 7% Interest Subsidy</span>
+            <span class="scheme-badge-item"><i class="fa-solid fa-qrcode"></i> Digital Payment Incentives</span>
+            <span class="scheme-badge-item"><i class="fa-solid fa-store"></i> Street Vendor Focused</span>
+          </div>
+        </div>
+
+        <!-- Government support relevant to LokVyapar vendors -->
+        <div class="scheme-section-heading">
+          <i class="fa-solid fa-building-columns text-primary"></i>
+          <span>Government Schemes & Services Relevant to Vendors</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:0.8rem; margin-bottom:1.25rem;">
+          <div class="benefit-item-card">
+            <div class="benefit-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+            <div class="benefit-text">
+              <strong>PM SVANidhi</strong>
+              <p>Working-capital loan support for eligible street vendors, with repayment-linked benefits and digital-payment incentives.</p>
+              <span class="badge-pill" style="display:inline-block; margin-top:0.35rem;">Loan & Financial Support</span>
+            </div>
+          </div>
+
+          <div class="benefit-item-card">
+            <div class="benefit-icon" style="background:#047857;"><i class="fa-solid fa-utensils"></i></div>
+            <div class="benefit-text">
+              <strong>FSSAI Clean Street Food Support</strong>
+              <p>Relevant for food vendors: hygiene and food-safety certification information is displayed in the LokVyapar vendor directory.</p>
+              <span class="badge-pill" style="display:inline-block; margin-top:0.35rem;">Food Safety</span>
+            </div>
+          </div>
+
+          <div class="benefit-item-card">
+            <div class="benefit-icon" style="background:#d97706;"><i class="fa-solid fa-map-location-dot"></i></div>
+            <div class="benefit-text">
+              <strong>NMC / TVC Vending Support</strong>
+              <p>Vendor registration, designated vending zones and location-based compliance are part of the LokVyapar municipal workflow.</p>
+              <span class="badge-pill" style="display:inline-block; margin-top:0.35rem;">Registration & Zoning</span>
+            </div>
+          </div>
+
+          <div class="benefit-item-card">
+            <div class="benefit-icon" style="background:#881337;"><i class="fa-solid fa-bullhorn"></i></div>
+            <div class="benefit-text">
+              <strong>Aaple Sarkar / Grievance Support</strong>
+              <p>Vendors and citizens can use the civic grievance workflow for issues such as cleanliness, hygiene, pricing and pathway obstruction.</p>
+              <span class="badge-pill" style="display:inline-block; margin-top:0.35rem;">Civic Support</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PM SVANidhi Loan Tranches -->
+        <div class="scheme-section-heading">
+          <i class="fa-solid fa-layer-group text-primary"></i>
+          <span data-i18n="svanidhi_sec_tranches">PM SVANidhi Working Capital Loan Facility</span>
+        </div>
+        <div class="svanidhi-tranches-grid">
+          <div class="tranche-card">
+            <span class="tranche-badge">Tranche 1</span>
+            <div class="tranche-amount">₹10,000</div>
+            <div class="tranche-meta">Initial working-capital support. Timely repayment can support eligibility for the next tranche.</div>
+          </div>
+          <div class="tranche-card">
+            <span class="tranche-badge">Tranche 2</span>
+            <div class="tranche-amount">₹20,000</div>
+            <div class="tranche-meta">Enhanced working capital for inventory and stall/business expansion.</div>
+          </div>
+          <div class="tranche-card">
+            <span class="tranche-badge">Tranche 3</span>
+            <div class="tranche-amount">₹50,000</div>
+            <div class="tranche-meta">Growth capital for scaled business operations.</div>
+          </div>
+        </div>
+
+        <!-- Financial Benefits -->
+        <div class="scheme-section-heading">
+          <i class="fa-solid fa-gift text-success"></i>
+          <span data-i18n="svanidhi_sec_benefits">Key PM SVANidhi Benefits</span>
+        </div>
+        <div class="svanidhi-benefits-grid">
+          <div class="benefit-item-card">
+            <div class="benefit-icon"><i class="fa-solid fa-percent"></i></div>
+            <div class="benefit-text">
+              <strong>7% Annual Interest Subsidy</strong>
+              <p>Interest subsidy information shown in the project is linked to timely repayment and direct benefit transfer.</p>
+            </div>
+          </div>
+          <div class="benefit-item-card">
+            <div class="benefit-icon" style="background:#0284c7;"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <div class="benefit-text">
+              <strong>Digital Payment Incentives</strong>
+              <p>Encourages vendors to accept digital customer payments and supports the project's UPI-based vendor intelligence workflow.</p>
+            </div>
+          </div>
+          <div class="benefit-item-card">
+            <div class="benefit-icon" style="background:#7c3aed;"><i class="fa-solid fa-chart-line"></i></div>
+            <div class="benefit-text">
+              <strong>Credit & Repayment Record</strong>
+              <p>Timely repayment helps build a formal credit history and supports access to future financial services.</p>
+            </div>
+          </div>
+          <div class="benefit-item-card">
+            <div class="benefit-icon" style="background:#d97706;"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="benefit-text">
+              <strong>Collateral-Free Support</strong>
+              <p>The project presents PM SVANidhi as collateral-free working-capital support for eligible street vendors.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vendor application guidance -->
+        <div class="scheme-section-heading">
+          <i class="fa-solid fa-list-ol text-primary"></i>
+          <span>How a Vendor Uses LokVyapar With These Services</span>
+        </div>
+        <div class="scheme-steps-list">
+          <div class="scheme-step-item">
+            <div class="step-num-circle">1</div>
+            <div class="step-content">
+              <strong>Register / Verify Vendor</strong>
+              <p>Use the vendor registration and TVC verification workflow to maintain your vendor profile and vending-zone information.</p>
+            </div>
+          </div>
+          <div class="scheme-step-item">
+            <div class="step-num-circle">2</div>
+            <div class="step-content">
+              <strong>Check PM SVANidhi Support</strong>
+              <p>Review loan, repayment and subsidy information relevant to your vendor account.</p>
+            </div>
+          </div>
+          <div class="scheme-step-item">
+            <div class="step-num-circle">3</div>
+            <div class="step-content">
+              <strong>Use Digital Payments</strong>
+              <p>Accept UPI payments and use LokVyapar's digital-payment activity and footfall insights to understand demand.</p>
+            </div>
+          </div>
+          <div class="scheme-step-item">
+            <div class="step-num-circle">4</div>
+            <div class="step-content">
+              <strong>Stay Compliant & Get Support</strong>
+              <p>Follow the applicable vending-zone, food-safety and civic requirements and use the grievance workflow when support is needed.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="scheme-notice-box" style="margin-top:1rem; padding:0.85rem 1rem; border:1px solid #bfdbfe; background:#eff6ff; border-radius:8px; color:#1e3a8a;">
+          <strong><i class="fa-solid fa-circle-info"></i> Important:</strong>
+          LokVyapar is a student/demo platform. Scheme eligibility, loan amounts, subsidy rules and application status should be confirmed through the relevant official government authority before applying.
+        </div>
+
+        <div class="svanidhi-footer-actions">
+          <div class="helpline-box">
+            <i class="fa-solid fa-phone-volume text-primary"></i>
+            <span>Use the official PM SVANidhi portal or your local NMC/TVC support channel for application and status verification.</span>
+          </div>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <a href="https://pmsvanidhi.mohua.gov.in/" target="_blank" rel="noopener noreferrer" class="btn btn-gov-saffron btn-sm">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> Visit Official PM SVANidhi Portal
+            </a>
+            <button class="btn btn-gov-outline btn-sm" onclick="closeModal('svanidhiModal')">
+              Close Government Schemes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. STUDENT PROJECT DOSSIER MODAL -->
+  <div class="modal-backdrop hidden" id="studentProjectModal">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <i class="fa-solid fa-graduation-cap text-primary" style="font-size:1.4rem;"></i>
+          <h3 data-i18n="dossier_title">Student Project Dossier & Technical Report</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('studentProjectModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-intro" data-i18n="dossier_intro">
+          <strong>Project Name:</strong> LokVyapar - Smart Urban Street Vendor Footfall & UPI Intelligence
+          Platform.<br />
+          Developed by 3rd year <strong>B.Tech AI & DS</strong> students in academic
+          collaboration with Nagpur Municipal Corporation.
+        </p>
+
+        <div class="student-dossier-grid">
+          <div class="dossier-item">
+            <div class="dossier-lbl" data-i18n="dossier_inst_lbl">Academic Institution & Department</div>
+            <div class="dossier-val" data-i18n="dossier_inst_val">Department of AI & DS, Nagpur
+            </div>
+          </div>
+          <div class="dossier-item">
+            <div class="dossier-lbl" data-i18n="dossier_batch_lbl">Academic Year & Batch</div>
+            <div class="dossier-val" data-i18n="dossier_batch_val">Third Year (2026-2027)</div>
+          </div>
+          <div class="dossier-item">
+            <div class="dossier-lbl" data-i18n="dossier_mentor_lbl">Project Mentors</div>
+            <div class="dossier-val" data-i18n="dossier_mentor_val">Faculty Guides & TVC Executive Director, NMC</div>
+          </div>
+          <div class="dossier-item">
+            <div class="dossier-lbl" data-i18n="dossier_stack_lbl">Technology Stack</div>
+            <div class="dossier-val">HTML5, Pure CSS3, Vanilla JS (ES6+)</div>
+          </div>
+        </div>
+
+        <div class="team-members-list">
+          <h4 data-i18n="dossier_team_title">🎓 Student Developer Team Contributors</h4>
+          <div class="team-grid">
+            <div class="member-chip">
+              <strong>Atharv Deshmukh (Roll #106)</strong><br />
+              <small class="text-muted">Front-End Developer</small>
+            </div>
+            <div class="member-chip">
+              <strong>Jay Ganorkar (Roll #108)</strong><br />
+              <small class="text-muted">UI/UX Designer</small>
+            </div>
+            <div class="member-chip">
+              <strong>Piyush Sharma (Roll #110)</strong><br />
+              <small class="text-muted">UPI Transaction Simulator</small>
+            </div>
+            <div class="member-chip">
+              <strong>Panjak Gavhare (Roll #109)</strong><br />
+              <small class="text-muted">Back-End Developer</small>
+            </div>
+             <div class="member-chip">
+              <strong>Riddhish Bawangade (Roll #116)</strong><br />
+              <small class="text-muted">Database</small>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:1rem; text-align:right;">
+          <button class="btn btn-gov-primary btn-sm" onclick="closeModal('studentProjectModal')"
+            data-i18n="btn_close_dossier">Close Dossier</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. VENDOR LOGIN MODAL -->
+  <div class="modal-backdrop hidden" id="vendorLoginModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <i class="fa-solid fa-shop text-primary"></i>
+          <h3 data-i18n="vlogin_title">Vendor Stall Login</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('vendorLoginModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-intro" data-i18n="vlogin_intro">Login with your registered PM SVANidhi ID or mobile number to
+          access your stall earnings and footfall alerts.</p>
+
+        <form
+          onsubmit="event.preventDefault(); LokVyaparAPI.setActiveSession({name:'Ramesh Chaat Corner', role:'Vendor • Sitabuldi'}); restoreSession(); closeModal('vendorLoginModal'); switchView('vendor'); showToast(appState.currentLang === 'mr' ? 'व्यापारी डॅशबोर्डमध्ये स्वागत!' : 'Welcome to Vendor Portal!');">
+          <div class="form-group">
+            <label for="vendorLoginId"><span data-i18n="lbl_vlogin_id">PM-SVANidhi ID / Mobile</span> <span
+                class="req">*</span></label>
+            <input type="text" id="vendorLoginId" value="NAG-SVN-8812" required />
+          </div>
+          <div class="form-group">
+            <label for="vendorLoginPin"><span data-i18n="lbl_vlogin_pin">Security PIN / OTP</span> <span
+                class="req">*</span></label>
+            <input type="password" id="vendorLoginPin" value="1234" required />
+          </div>
+          <div class="demo-quick-box">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span data-i18n="demo_vendor_note"><strong>Demo Credential:</strong> Pre-filled for <em>Ramesh Chaat Corner
+                (Sitabuldi)</em>.</span>
+          </div>
+          <button type="submit" class="btn btn-gov-primary w-100 btn-lg mt-2" data-i18n="btn_vlogin_submit">
+            <i class="fa-solid fa-right-to-bracket"></i> Login to Vendor Portal
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. NMC MUNICIPAL LOGIN MODAL -->
+  <div class="modal-backdrop hidden" id="nmcLoginModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <i class="fa-solid fa-landmark-dome text-accent"></i>
+          <h3 data-i18n="nlogin_title">Nagpur Municipal TVC Officer Login</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('nmcLoginModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-intro" data-i18n="nlogin_intro">Town Vending Committee administrative access for vendor zoning,
+          grievance resolution, and crowd management.</p>
+
+        <form
+          onsubmit="event.preventDefault(); LokVyaparAPI.setActiveSession({name:'TVC Admin Officer', role:'NMC Head Office'}); restoreSession(); closeModal('nmcLoginModal'); switchView('nmc'); showToast(appState.currentLang === 'mr' ? 'मनपा प्रशासकीय कन्सोलमध्ये स्वागत!' : 'Welcome to NMC Admin Console!');">
+          <div class="form-group">
+            <label for="nmcOfficerId"><span data-i18n="lbl_nlogin_id">NMC Officer ID</span> <span
+                class="req">*</span></label>
+            <input type="text" id="nmcOfficerId" value="NMC-TVC-OFFICER-01" required />
+          </div>
+          <div class="form-group">
+            <label for="nmcPassword"><span data-i18n="lbl_nlogin_pin">Passcode</span> <span class="req">*</span></label>
+            <input type="password" id="nmcPassword" value="nagpur2026" required />
+          </div>
+          <div class="demo-quick-box">
+            <i class="fa-solid fa-shield-check"></i>
+            <span data-i18n="demo_nmc_note"><strong>Demo Credential:</strong> Pre-filled for <em>TVC Admin
+                Officer</em>.</span>
+          </div>
+          <button type="submit" class="btn btn-gov-saffron w-100 btn-lg mt-2" data-i18n="btn_nlogin_submit">
+            <i class="fa-solid fa-shield-halved"></i> Enter NMC Admin Console
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. RATE VENDOR MODAL -->
+  <div class="modal-backdrop hidden" id="reviewModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <i class="fa-solid fa-star text-warning"></i>
+          <h3 id="reviewModalVendorName">Rate Vendor</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('reviewModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-intro" data-i18n="rmodal_intro">Your transparent rating helps honest street vendors build
+          community trust and maintain quality standards.</p>
+
+        <form onsubmit="handleReviewSubmit(event)">
+          <input type="hidden" id="reviewVendorId" value="1" />
+
+          <div class="form-group text-center">
+            <label><span data-i18n="lbl_overall_rating">Overall Star Rating</span> <span class="req">*</span></label>
+            <div class="star-rating-picker" id="starPicker">
+              <i class="fa-solid fa-star active" data-val="1" onclick="setStarRating(1)"></i>
+              <i class="fa-solid fa-star active" data-val="2" onclick="setStarRating(2)"></i>
+              <i class="fa-solid fa-star active" data-val="3" onclick="setStarRating(3)"></i>
+              <i class="fa-solid fa-star active" data-val="4" onclick="setStarRating(4)"></i>
+              <i class="fa-solid fa-star active" data-val="5" onclick="setStarRating(5)"></i>
+            </div>
+            <input type="hidden" id="reviewStarValue" value="5" />
+            <span class="rating-feedback-text" id="starRatingFeedback">5 Stars - Outstanding Experience!</span>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="reviewerName"><span data-i18n="lbl_reviewer_name">Your Full Name</span> <span
+                  class="req">*</span></label>
+              <input type="text" id="reviewerName" placeholder="e.g. Shruti Patil" required />
+            </div>
+            <div class="form-group">
+              <label for="reviewQualityTag"><span data-i18n="lbl_key_highlight">Key Highlight</span></label>
+              <select id="reviewQualityTag">
+                <option value="Superb Taste & Freshness" data-i18n-opt="opt_tag_taste">🍲 Superb Taste & Freshness
+                </option>
+                <option value="100% Clean & Hygienic" data-i18n-opt="opt_tag_clean">🧼 100% Clean & Hygienic</option>
+                <option value="Quick UPI Payment" data-i18n-opt="opt_tag_upi">💳 Quick UPI Payment</option>
+                <option value="Very Polite & Friendly" data-i18n-opt="opt_tag_polite">🤝 Very Polite & Friendly</option>
+                <option value="Affordable Pricing" data-i18n-opt="opt_tag_price">💰 Affordable Pricing</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reviewComment"><span data-i18n="lbl_review_comment">Your Review & Experience</span> <span
+                class="req">*</span></label>
+            <textarea id="reviewComment" rows="3" required data-i18n-placeholder="ph_review_comment"
+              placeholder="Share what you liked about their food, items, cleanliness, and service..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-gov-primary w-100 btn-lg" data-i18n="btn_publish_review">
+            <i class="fa-solid fa-paper-plane"></i> Publish Review
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. FILE COMPLAINT POPUP MODAL (From Hero) -->
+  <div class="modal-backdrop hidden" id="complaintModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <i class="fa-solid fa-bullhorn text-danger"></i>
+          <h3 data-i18n="cmodal_title">File Citizen Grievance / Feedback</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('complaintModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-intro" data-i18n="cmodal_intro">Report civic issues directly to the Nagpur Municipal Town
+          Vending Committee (TVC).</p>
+
+        <form onsubmit="handleModalComplaintSubmit(event)">
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="mCitizenName"><span data-i18n="lbl_name">Name</span> <span class="req">*</span></label>
+              <input type="text" id="mCitizenName" required placeholder="Your full name" />
+            </div>
+            <div class="form-group">
+              <label for="mCitizenPhone"><span data-i18n="lbl_phone">Phone</span> <span class="req">*</span></label>
+              <input type="tel" id="mCitizenPhone" required placeholder="Mobile number" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="mComplaintMarket"><span data-i18n="lbl_market">Market Area</span> <span
+                class="req">*</span></label>
+            <select id="mComplaintMarket" required>
+              <option value="Sitabuldi">Sitabuldi Main Road</option>
+              <option value="Sadar">Sadar Bazar</option>
+              <option value="Dharampeth">Dharampeth WHC Road</option>
+              <option value="Itwari">Itwari Sarafa</option>
+              <option value="Mahal">Mahal Badkas Chowk</option>
+              <option value="Gandhibagh">Gandhibagh</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="mComplaintCategory"><span data-i18n="lbl_category">Category</span> <span
+                class="req">*</span></label>
+            <select id="mComplaintCategory" required>
+              <option value="Footpath Encroachment" data-i18n-opt="opt_issue_encroach">🚶 Footpath Encroachment /
+                Walking Obstruction</option>
+              <option value="Garbage & Cleanliness" data-i18n-opt="opt_issue_garbage">🗑️ Garbage & Cleanliness</option>
+              <option value="Hygiene & Food Safety" data-i18n-opt="opt_issue_hygiene">🧼 Hygiene & Food Safety Concern
+              </option>
+              <option value="Overcharging & Pricing" data-i18n-opt="opt_issue_price">💰 Overcharging / Unfair Pricing
+              </option>
+              <option value="Positive Feedback & Appreciation" data-i18n-opt="opt_issue_praise">🌟 Positive Vendor
+                Appreciation</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="mComplaintDesc"><span data-i18n="lbl_desc">Description</span> <span class="req">*</span></label>
+            <textarea id="mComplaintDesc" rows="3" required data-i18n-placeholder="ph_complaint_desc"
+              placeholder="Describe the issue in detail..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-gov-maroon w-100 btn-lg" data-i18n="btn_cmodal_submit">
+            <i class="fa-solid fa-paper-plane"></i> Submit Grievance
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. REGISTER NEW VENDOR MODAL (NMC Admin) -->
+  <div class="modal-backdrop hidden" id="newVendorModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <i class="fa-solid fa-user-plus text-primary"></i>
+          <h3 data-i18n="reg_modal_title">Register New Street Vendor (NMC TVC)</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('newVendorModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form
+          onsubmit="event.preventDefault(); const n = document.getElementById('regVendorName').value; const p = document.getElementById('regProprietor').value; const m = document.getElementById('regMarket').value; const c = document.getElementById('regCategory').value; LokVyaparAPI.registerVendor({name: n, proprietor: p, marketId: m, category: c, address: document.getElementById('regLocation').value}); closeModal('newVendorModal'); renderVendorCards(); renderNmcCensusTable(); showToast(appState.currentLang === 'mr' ? 'नवीन विक्रेता यशस्वीरित्या नोंदणीकृत!' : 'Vendor successfully registered!');">
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="regVendorName"><span data-i18n="lbl_stall_name">Stall / Business Name</span> <span
+                  class="req">*</span></label>
+              <input type="text" id="regVendorName" required data-i18n-placeholder="ph_stall_name"
+                placeholder="e.g. Nagpur Orange Juice Corner" />
+            </div>
+            <div class="form-group">
+              <label for="regProprietor"><span data-i18n="lbl_proprietor_name">Proprietor Name</span> <span
+                  class="req">*</span></label>
+              <input type="text" id="regProprietor" required data-i18n-placeholder="ph_proprietor_name"
+                placeholder="e.g. Vikas Raut" />
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="regCategory"><span data-i18n="lbl_category_select">Category</span> <span
+                  class="req">*</span></label>
+              <select id="regCategory" required>
+                <option value="Street Food" data-i18n-opt="cat_food">Street Food & Snacks</option>
+                <option value="Fruits & Veggies" data-i18n-opt="cat_fruits">Fruits & Fresh Vegetables</option>
+                <option value="Tea & Beverages" data-i18n-opt="cat_tea">Tea, Juices & Beverages</option>
+                <option value="Apparel & Garments" data-i18n-opt="cat_clothes">Clothes & Garments</option>
+                <option value="Handicrafts & Artisans" data-i18n-opt="cat_art">Traditional Artisans & Crafts</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="regMarket"><span data-i18n="lbl_market_select">Market Zone</span> <span
+                  class="req">*</span></label>
+              <select id="regMarket" required>
+                <option value="Sitabuldi">Sitabuldi</option>
+                <option value="Sadar">Sadar</option>
+                <option value="Dharampeth">Dharampeth</option>
+                <option value="Itwari">Itwari</option>
+                <option value="Mahal">Mahal</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="regLocation"><span data-i18n="lbl_stall_address">Specific Stall Address</span> <span
+                class="req">*</span></label>
+            <input type="text" id="regLocation" required data-i18n-placeholder="ph_stall_address"
+              placeholder="e.g. Stall #88, Opp. Variety Square, Sitabuldi" />
+          </div>
+
+          <button type="submit" class="btn btn-gov-primary w-100 btn-lg" data-i18n="btn_register_save">
+            <i class="fa-solid fa-id-card"></i> Issue TVC Registration ID & Save
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- Leaflet Map JS & Application Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="api-service.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
